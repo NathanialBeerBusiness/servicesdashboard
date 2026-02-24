@@ -3,13 +3,19 @@
 Simple browser-based dashboard prototype for a services business automation workflow.
 
 ## Features
-- Tabbed pages for Customer Accounts, Jobs, Job Reports, and Invoices.
+- Separate pages for Customer Accounts, Jobs, Service Reports, and Invoices.
 - Customer account management with residential/business fields (including ABN).
-- Customer Accounts page shows all customers and supports explicit "Create Customer" flow.
 - Job creation linked to customers.
-- Service report creation with property photo, notes, hazards, and print-to-PDF export.
+- Service Report creation with property photo, notes, hazards, and completion timestamp.
+- Service Report PDF export that prints **only the report content**.
 - Alert draft generation for email and SMS messages.
 - Invoice creation with payment instructions.
+
+## Pages
+- `customers.html`
+- `jobs.html`
+- `service-reports.html`
+- `invoices.html`
 
 ## Run locally
 ```bash

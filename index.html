@@ -2,115 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0; url=customers.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ToxinResin Services Dashboard</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>ToxinResin Dashboard</title>
   </head>
   <body>
-    <header>
-      <h1>ToxinResin Automation Dashboard</h1>
-      <p>Manage customers, jobs, reports, alerts, and invoices in one place.</p>
-    </header>
-
-    <main>
-      <nav class="tabs" aria-label="Dashboard sections">
-        <button class="tab active" data-tab="customers" type="button">Customer Accounts</button>
-        <button class="tab" data-tab="jobs" type="button">Jobs</button>
-        <button class="tab" data-tab="reports" type="button">Job Reports</button>
-        <button class="tab" data-tab="invoices" type="button">Invoices</button>
-      </nav>
-
-      <section class="card tab-panel active" id="tab-customers">
-        <div class="panel-head">
-          <h2>Customer Accounts</h2>
-          <button id="toggle-customer-form" type="button">Create Customer</button>
-        </div>
-
-        <div id="customer-empty" class="empty-state">
-          No customer accounts yet. Create your first customer to get started.
-        </div>
-
-        <form id="customer-form" class="grid-form hidden">
-          <input name="name" placeholder="Full name" required />
-          <input name="phone" placeholder="Phone" required />
-          <input name="email" type="email" placeholder="Email" required />
-          <input name="address" placeholder="Address" required />
-          <label class="inline">
-            <input name="isBusiness" type="checkbox" />
-            Business customer
-          </label>
-          <input name="abn" placeholder="ABN (if business)" />
-          <textarea name="businessInfo" placeholder="Further business information"></textarea>
-          <button type="submit">Save Customer</button>
-        </form>
-
-        <div id="customer-list" class="list"></div>
-      </section>
-
-      <section class="card tab-panel" id="tab-jobs">
-        <h2>Jobs</h2>
-        <form id="job-form" class="grid-form">
-          <select name="customerId" required>
-            <option value="">Select customer</option>
-          </select>
-          <input name="address" placeholder="Job address" required />
-          <textarea name="description" placeholder="Job description" required></textarea>
-          <input name="scheduledAt" type="datetime-local" required />
-          <button type="submit">Create Job</button>
-        </form>
-        <div id="job-list" class="list"></div>
-      </section>
-
-      <section class="card tab-panel" id="tab-reports">
-        <h2>Job Reports (PDF Export)</h2>
-        <form id="report-form" class="grid-form">
-          <select name="jobId" required>
-            <option value="">Select job</option>
-          </select>
-          <input name="propertyPhoto" type="file" accept="image/*" required />
-          <textarea name="workDone" placeholder="Work carried out" required></textarea>
-          <textarea name="hazards" placeholder="Problems / hazards observed" required></textarea>
-          <button type="submit">Create Report</button>
-        </form>
-
-        <div class="alerts-block">
-          <h3>Automatic Alerts</h3>
-          <p>Generate alert drafts for email + SMS when jobs and reports are created.</p>
-          <button id="generate-alerts" type="button">Generate Alerts</button>
-          <div id="alert-list" class="list"></div>
-        </div>
-
-        <div id="report-preview" class="report-preview"></div>
-      </section>
-
-      <section class="card tab-panel" id="tab-invoices">
-        <h2>Invoices</h2>
-        <form id="invoice-form" class="grid-form">
-          <select name="customerId" required>
-            <option value="">Select customer</option>
-          </select>
-          <input name="service" placeholder="Service summary" required />
-          <input name="amount" type="number" min="0" step="0.01" placeholder="Amount" required />
-          <textarea name="paymentInfo" placeholder="How to pay (bank details, terms)" required></textarea>
-          <button type="submit">Create Invoice</button>
-        </form>
-        <div id="invoice-list" class="list"></div>
-      </section>
-    </main>
-
-    <template id="report-template">
-      <article class="pdf-report" id="printable-report">
-        <h3>Service Report - ToxinResin</h3>
-        <p><strong>Customer:</strong> <span data-field="customer"></span></p>
-        <p><strong>Job Description:</strong> <span data-field="description"></span></p>
-        <p><strong>Address:</strong> <span data-field="address"></span></p>
-        <p><strong>Date Completed:</strong> <span data-field="completedAt"></span></p>
-        <img data-field="photo" alt="Front of property" />
-        <p><strong>Work Carried Out:</strong> <span data-field="workDone"></span></p>
-        <p><strong>Problems / Hazards:</strong> <span data-field="hazards"></span></p>
-      </article>
-    </template>
-
-    <script src="app.js"></script>
+    <p>Redirecting to <a href="customers.html">Customer Accounts</a>...</p>
   </body>
 </html>
