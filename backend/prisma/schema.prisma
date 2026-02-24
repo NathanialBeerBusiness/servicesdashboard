@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  name      String
+  company   String?
+  phone     String
+  email     String
+  address   String
+  notes     String?
+  status    Status   @default(ACTIVE)
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  jobs      Job[]
+}
+
+model Job {
+  id            String      @id @default(cuid())
+  jobCode       String      @unique
+  accountId     String
+  status        JobStatus   @default(PENDING)
+  description   String
+  assignedStaff String
+  location      String
+  startDate     DateTime
+  dueDate       DateTime
+  priority      Priority    @default(MEDIUM)
+  deletedAt     DateTime?
+  account       Account     @relation(fields: [accountId], references: [id])
+  serviceReport ServiceReport?
+  invoice       Invoice?
+}
+
+model ServiceReport {
+  id              String   @id @default(cuid())
+  jobId            String   @unique
+  workPerformed    String
+  partsUsed        String
+  timeOnSite       String
+  notes            String
+  technicianSign   String
+  photosJson       String
+  version          Int      @default(1)
+  deletedAt        DateTime?
+  createdAt        DateTime @default(now())
+  job              Job      @relation(fields: [jobId], references: [id])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  jobId          String        @unique
+  invoiceNumber  String        @unique
+  lineItemsJson  String
+  tax            Float
+  total          Float
+  dueDate        DateTime
+  status         InvoiceStatus @default(DRAFT)
+  deletedAt      DateTime?
+  createdAt      DateTime      @default(now())
+  job            Job           @relation(fields: [jobId], references: [id])
+}
+
+model NotificationTemplate {
+  id        String   @id @default(cuid())
+  channel   String
+  eventType String
+  subject   String
+  body      String
+  enabled   Boolean  @default(true)
+}
+
+model DeliveryLog {
+  id         String   @id @default(cuid())
+  channel    String
+  recipient  String
+  payload    String
+  status     String
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  metadata   String?
+  createdAt  DateTime @default(now())
+}
+
+enum Role { ADMIN STAFF }
+enum Status { ACTIVE INACTIVE }
+enum JobStatus { PENDING ACTIVE COMPLETED CANCELLED }
+enum Priority { LOW MEDIUM HIGH URGENT }
+enum InvoiceStatus { DRAFT SENT PAID OVERDUE }
