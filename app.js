@@ -39,9 +39,6 @@ function fileToDataUrl(file) {
   });
 }
 
-async function filesToDataUrls(fileList) {
-  return Promise.all(Array.from(fileList).map(file => fileToDataUrl(file)));
-}
 
 function refreshCustomerState() {
   if (!customerEmpty || !customerForm || !toggleCustomerFormButton) {
@@ -140,9 +137,9 @@ function renderReports() {
   const reports = getData(storageKeys.reports);
   reportList.innerHTML = reports
     .map(
-      report => `<div class="item"><strong>${report.customerName}</strong><br>${report.jobDescription}<br>${report.address}<br>Completed: ${new Date(
-        report.completedAt
-      ).toLocaleString()}<br>Finalised by: ${report.finalisedBy || 'N/A'}<div class="item-actions"><button type="button" data-preview-report="${
+      report => `<div class="item"><strong>${report.customerName}</strong><br>Job Number: ${report.jobNumber}<br>Date: ${
+        report.reportDate
+      } ${report.reportTime}<br>Finalized by: ${report.finalisedBy || 'N/A'}<div class="item-actions"><button type="button" data-preview-report="${
         report.id
       }">View</button><button class="danger" type="button" data-delete-report="${
         report.id
@@ -181,27 +178,25 @@ function buildReportPreview(report) {
   const setField = (field, value) => {
     const node = fragment.querySelector(`[data-field="${field}"]`);
     if (!node) return;
-    if (field === 'photo' || field === 'signature') {
+    if (field === 'propertyPhoto') {
       node.src = value;
-    } else if (field === 'servicePhotos') {
-      node.innerHTML = (value || [])
-        .map(src => `<img src="${src}" alt="Service photo" class="service-photo" />`)
-        .join('');
     } else {
       node.textContent = value;
     }
   };
 
-  setField('customer', report.customerName);
-  setField('description', report.jobDescription);
-  setField('address', report.address);
-  setField('completedAt', new Date(report.completedAt).toLocaleString());
-  setField('photo', report.photoDataUrl);
-  setField('servicePhotos', report.servicePhotoDataUrls || []);
+  setField('customerName', report.customerName);
+  setField('customerAddress', report.customerAddress);
+  setField('customerEmail', report.customerEmail);
+  setField('customerPhone', report.customerPhone);
+  setField('reportDate', report.reportDate);
+  setField('reportTime', report.reportTime);
+  setField('jobNumber', report.jobNumber);
+  setField('propertyPhoto', report.propertyPhotoDataUrl);
   setField('workDone', report.workDone);
-  setField('hazards', report.hazards);
+  setField('notesObservations', report.notesObservations);
+  setField('recommendations', report.recommendations);
   setField('finalisedBy', report.finalisedBy);
-  setField('signature', report.signatureDataUrl);
 
   reportPreview.innerHTML = '';
   reportPreview.append(fragment);
@@ -305,8 +300,6 @@ if (reportForm) {
     event.preventDefault();
     const form = new FormData(reportForm);
     const file = form.get('propertyPhoto');
-    const signatureFile = form.get('finaliserSignature');
-    const servicePhotoFiles = reportForm.servicePhotos?.files || [];
     const jobId = String(form.get('jobId'));
 
     const jobs = getData(storageKeys.jobs);
@@ -314,25 +307,27 @@ if (reportForm) {
     const job = jobs.find(j => j.id === jobId);
     const customer = customers.find(c => c.id === job?.customerId);
 
-    if (!job || !file || !(file instanceof File) || !(signatureFile instanceof File)) return;
+    if (!job || !file || !(file instanceof File)) return;
 
-    const photoDataUrl = await fileToDataUrl(file);
-    const signatureDataUrl = await fileToDataUrl(signatureFile);
-    const servicePhotoDataUrls = await filesToDataUrls(servicePhotoFiles);
+    const propertyPhotoDataUrl = await fileToDataUrl(file);
+    const createdAt = new Date();
 
     const report = {
       id: uid(),
       jobId,
+      jobNumber: job.id,
       customerName: customer?.name || 'Unknown customer',
-      jobDescription: job.description,
-      address: job.address,
-      completedAt: new Date().toISOString(),
+      customerAddress: customer?.address || job.address,
+      customerEmail: customer?.email || 'N/A',
+      customerPhone: customer?.phone || 'N/A',
+      reportDate: createdAt.toLocaleDateString(),
+      reportTime: createdAt.toLocaleTimeString(),
       workDone: String(form.get('workDone')),
-      hazards: String(form.get('hazards')),
-      photoDataUrl,
-      servicePhotoDataUrls,
+      notesObservations: String(form.get('notesObservations')),
+      recommendations: String(form.get('recommendations')),
       finalisedBy: String(form.get('finalisedBy')),
-      signatureDataUrl
+      propertyPhotoDataUrl,
+      completedAt: createdAt.toISOString()
     };
 
     const reports = getData(storageKeys.reports);

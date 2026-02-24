@@ -25,11 +25,10 @@
         <form id="report-form" class="grid-form">
           <select name="jobId" required><option value="">Select job</option></select>
           <input name="propertyPhoto" type="file" accept="image/*" required />
-          <input name="servicePhotos" type="file" accept="image/*" multiple />
-          <input name="finalisedBy" placeholder="Finalised by" required />
-          <input name="finaliserSignature" type="file" accept="image/*" required />
-          <textarea name="workDone" placeholder="Work carried out" required></textarea>
-          <textarea name="hazards" placeholder="Problems / hazards observed" required></textarea>
+          <textarea name="workDone" placeholder="Work Carried Out" required></textarea>
+          <textarea name="notesObservations" placeholder="Notes / Observations" required></textarea>
+          <textarea name="recommendations" placeholder="Recommendations" required></textarea>
+          <input name="finalisedBy" placeholder="Finalized By (Name of Service Man)" required />
           <button type="submit">Create Service Report</button>
         </form>
 
@@ -66,17 +65,21 @@
     <template id="report-template">
       <article class="pdf-report" id="printable-report">
         <h3>Service Report - ToxinResin</h3>
-        <p><strong>Customer:</strong> <span data-field="customer"></span></p>
-        <p><strong>Job Description:</strong> <span data-field="description"></span></p>
-        <p><strong>Address:</strong> <span data-field="address"></span></p>
-        <p><strong>Date Completed:</strong> <span data-field="completedAt"></span></p>
-        <img data-field="photo" alt="Front of property" />
-        <div data-field="servicePhotos" class="service-photos"></div>
-        <p><strong>Work Carried Out:</strong> <span data-field="workDone"></span></p>
-        <p><strong>Problems / Hazards:</strong> <span data-field="hazards"></span></p>
-        <p><strong>Finalised By:</strong> <span data-field="finalisedBy"></span></p>
-        <p><strong>Signature:</strong></p>
-        <img data-field="signature" alt="Finaliser signature" class="signature" />
+        <p><strong>1. Customer Information</strong></p>
+        <p><strong>2. Customer Name:</strong> <span data-field="customerName"></span></p>
+        <p><strong>3. Customer Address:</strong> <span data-field="customerAddress"></span></p>
+        <p><strong>4. Customer Email:</strong> <span data-field="customerEmail"></span></p>
+        <p><strong>5. Customer Phone Number:</strong> <span data-field="customerPhone"></span></p>
+        <p><strong>6. Date:</strong> <span data-field="reportDate"></span></p>
+        <p><strong>7. Time:</strong> <span data-field="reportTime"></span></p>
+        <p><strong>8. Job Number:</strong> <span data-field="jobNumber"></span></p>
+        <p><strong>9. Property Photo:</strong></p>
+        <img data-field="propertyPhoto" alt="Property photo" />
+        <p><strong>10. Work Carried Out:</strong> <span data-field="workDone"></span></p>
+        <p><strong>11. Notes / Observations:</strong> <span data-field="notesObservations"></span></p>
+        <p><strong>12. Recommendations:</strong> <span data-field="recommendations"></span></p>
+        <p><strong>13. Finalized By:</strong> <span data-field="finalisedBy"></span></p>
+        <p><strong>14.</strong> Please contact us if you have any further questions or concerns about our services.</p>
       </article>
     </template>
 

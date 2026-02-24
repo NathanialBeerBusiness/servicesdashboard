@@ -92,5 +92,6 @@ ServiceFlow is a modern service & job management platform for operations teams.
 - Add protected routes + RBAC middleware.
 
 ## Legacy Prototype Update
-- `service-reports.html` now supports uploading multiple service-carried-out photos.
-- `service-reports.html` now requires a finaliser signature image and "finalised by" value.
+- `service-reports.html` now uses a structured 14-point Service Report layout with customer details, date/time, job number, and clear section labels.
+- Service Report creation now captures `Work Carried Out`, `Notes / Observations`, `Recommendations`, and `Finalized By`.
+- Service Report preview/export now shows a dedicated `Property Photo` plus customer contact details and support closing message.
