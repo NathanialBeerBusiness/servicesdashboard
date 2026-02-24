@@ -31,6 +31,18 @@ function removeById(key, id) {
   setData(key, next);
 }
 
+function fileToDataUrl(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function filesToDataUrls(fileList) {
+  return Promise.all(Array.from(fileList).map(file => fileToDataUrl(file)));
+}
+
 function refreshCustomerState() {
   if (!customerEmpty || !customerForm || !toggleCustomerFormButton) {
     return;
@@ -130,7 +142,9 @@ function renderReports() {
     .map(
       report => `<div class="item"><strong>${report.customerName}</strong><br>${report.jobDescription}<br>${report.address}<br>Completed: ${new Date(
         report.completedAt
-      ).toLocaleString()}<div class="item-actions"><button type="button" data-preview-report="${report.id}">View</button><button class="danger" type="button" data-delete-report="${
+      ).toLocaleString()}<br>Finalised by: ${report.finalisedBy || 'N/A'}<div class="item-actions"><button type="button" data-preview-report="${
+        report.id
+      }">View</button><button class="danger" type="button" data-delete-report="${
         report.id
       }">Delete</button></div></div>`
     )
@@ -167,8 +181,12 @@ function buildReportPreview(report) {
   const setField = (field, value) => {
     const node = fragment.querySelector(`[data-field="${field}"]`);
     if (!node) return;
-    if (field === 'photo') {
+    if (field === 'photo' || field === 'signature') {
       node.src = value;
+    } else if (field === 'servicePhotos') {
+      node.innerHTML = (value || [])
+        .map(src => `<img src="${src}" alt="Service photo" class="service-photo" />`)
+        .join('');
     } else {
       node.textContent = value;
     }
@@ -179,8 +197,11 @@ function buildReportPreview(report) {
   setField('address', report.address);
   setField('completedAt', new Date(report.completedAt).toLocaleString());
   setField('photo', report.photoDataUrl);
+  setField('servicePhotos', report.servicePhotoDataUrls || []);
   setField('workDone', report.workDone);
   setField('hazards', report.hazards);
+  setField('finalisedBy', report.finalisedBy);
+  setField('signature', report.signatureDataUrl);
 
   reportPreview.innerHTML = '';
   reportPreview.append(fragment);
@@ -284,6 +305,8 @@ if (reportForm) {
     event.preventDefault();
     const form = new FormData(reportForm);
     const file = form.get('propertyPhoto');
+    const signatureFile = form.get('finaliserSignature');
+    const servicePhotoFiles = reportForm.servicePhotos?.files || [];
     const jobId = String(form.get('jobId'));
 
     const jobs = getData(storageKeys.jobs);
@@ -291,13 +314,11 @@ if (reportForm) {
     const job = jobs.find(j => j.id === jobId);
     const customer = customers.find(c => c.id === job?.customerId);
 
-    if (!job || !file || !(file instanceof File)) return;
+    if (!job || !file || !(file instanceof File) || !(signatureFile instanceof File)) return;
 
-    const photoDataUrl = await new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.readAsDataURL(file);
-    });
+    const photoDataUrl = await fileToDataUrl(file);
+    const signatureDataUrl = await fileToDataUrl(signatureFile);
+    const servicePhotoDataUrls = await filesToDataUrls(servicePhotoFiles);
 
     const report = {
       id: uid(),
@@ -308,7 +329,10 @@ if (reportForm) {
       completedAt: new Date().toISOString(),
       workDone: String(form.get('workDone')),
       hazards: String(form.get('hazards')),
-      photoDataUrl
+      photoDataUrl,
+      servicePhotoDataUrls,
+      finalisedBy: String(form.get('finalisedBy')),
+      signatureDataUrl
     };
 
     const reports = getData(storageKeys.reports);

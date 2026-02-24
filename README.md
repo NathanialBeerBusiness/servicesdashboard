@@ -90,3 +90,7 @@ ServiceFlow is a modern service & job management platform for operations teams.
 - Implement branded PDF generation service.
 - Integrate Twilio/SendGrid and retry/error handling.
 - Add protected routes + RBAC middleware.
+
+## Legacy Prototype Update
+- `service-reports.html` now supports uploading multiple service-carried-out photos.
+- `service-reports.html` now requires a finaliser signature image and "finalised by" value.

@@ -25,6 +25,9 @@
         <form id="report-form" class="grid-form">
           <select name="jobId" required><option value="">Select job</option></select>
           <input name="propertyPhoto" type="file" accept="image/*" required />
+          <input name="servicePhotos" type="file" accept="image/*" multiple />
+          <input name="finalisedBy" placeholder="Finalised by" required />
+          <input name="finaliserSignature" type="file" accept="image/*" required />
           <textarea name="workDone" placeholder="Work carried out" required></textarea>
           <textarea name="hazards" placeholder="Problems / hazards observed" required></textarea>
           <button type="submit">Create Service Report</button>
@@ -68,8 +71,12 @@
         <p><strong>Address:</strong> <span data-field="address"></span></p>
         <p><strong>Date Completed:</strong> <span data-field="completedAt"></span></p>
         <img data-field="photo" alt="Front of property" />
+        <div data-field="servicePhotos" class="service-photos"></div>
         <p><strong>Work Carried Out:</strong> <span data-field="workDone"></span></p>
         <p><strong>Problems / Hazards:</strong> <span data-field="hazards"></span></p>
+        <p><strong>Finalised By:</strong> <span data-field="finalisedBy"></span></p>
+        <p><strong>Signature:</strong></p>
+        <img data-field="signature" alt="Finaliser signature" class="signature" />
       </article>
     </template>
 
