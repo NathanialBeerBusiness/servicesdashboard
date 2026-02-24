@@ -1,0 +1,100 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  --bg: #f6f9fc;
+  --card: #fff;
+  --brand: #005f73;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #1f2937;
+}
+
+header {
+  background: var(--brand);
+  color: white;
+  padding: 1.25rem 1.5rem;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+}
+
+.two-col {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.grid-form {
+  display: grid;
+  gap: 0.6rem;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  padding: 0.55rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  background: #0a9396;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.list {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.item {
+  border: 1px solid #d1d5db;
+  padding: 0.55rem;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.report-preview img,
+.pdf-report img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.pdf-report {
+  border: 2px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fff;
+}
