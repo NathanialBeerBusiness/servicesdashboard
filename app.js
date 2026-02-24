@@ -11,6 +11,8 @@ const uid = () => `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 
 const customerForm = document.getElementById('customer-form');
 const customerList = document.getElementById('customer-list');
+const customerEmpty = document.getElementById('customer-empty');
+const toggleCustomerFormButton = document.getElementById('toggle-customer-form');
 const jobForm = document.getElementById('job-form');
 const jobList = document.getElementById('job-list');
 const reportForm = document.getElementById('report-form');
@@ -19,6 +21,33 @@ const alertList = document.getElementById('alert-list');
 const invoiceForm = document.getElementById('invoice-form');
 const invoiceList = document.getElementById('invoice-list');
 const generateAlertsButton = document.getElementById('generate-alerts');
+
+const tabs = Array.from(document.querySelectorAll('.tab'));
+const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+function switchTab(tabName) {
+  tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabName));
+  panels.forEach(panel => panel.classList.toggle('active', panel.id === `tab-${tabName}`));
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+function refreshCustomerState() {
+  const customers = getData(storageKeys.customers);
+  const hasCustomers = customers.length > 0;
+  customerEmpty.classList.toggle('hidden', hasCustomers);
+  if (!hasCustomers) {
+    customerForm.classList.remove('hidden');
+    toggleCustomerFormButton.textContent = 'Hide Form';
+  }
+}
+
+toggleCustomerFormButton.addEventListener('click', () => {
+  customerForm.classList.toggle('hidden');
+  toggleCustomerFormButton.textContent = customerForm.classList.contains('hidden') ? 'Create Customer' : 'Hide Form';
+});
 
 function renderSelectOptions() {
   const customers = getData(storageKeys.customers);
@@ -53,6 +82,8 @@ function renderCustomers() {
       }</div>`
     )
     .join('');
+
+  refreshCustomerState();
 }
 
 function renderJobs() {
@@ -104,10 +135,9 @@ function buildReportPreview(report) {
   reportPreview.append(fragment);
 
   const exportBtn = document.createElement('button');
+  exportBtn.type = 'button';
   exportBtn.textContent = 'Export Report as PDF';
-  exportBtn.addEventListener('click', () => {
-    window.print();
-  });
+  exportBtn.addEventListener('click', () => window.print());
   reportPreview.append(exportBtn);
 }
 
@@ -129,6 +159,8 @@ customerForm.addEventListener('submit', event => {
   customers.unshift(record);
   setData(storageKeys.customers, customers);
   customerForm.reset();
+  customerForm.classList.add('hidden');
+  toggleCustomerFormButton.textContent = 'Create Customer';
   renderCustomers();
   renderSelectOptions();
 });
@@ -239,3 +271,4 @@ renderCustomers();
 renderJobs();
 renderInvoices();
 renderSelectOptions();
+switchTab('customers');

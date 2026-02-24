@@ -13,9 +13,24 @@
     </header>
 
     <main>
-      <section class="card">
-        <h2>Customer Accounts</h2>
-        <form id="customer-form" class="grid-form">
+      <nav class="tabs" aria-label="Dashboard sections">
+        <button class="tab active" data-tab="customers" type="button">Customer Accounts</button>
+        <button class="tab" data-tab="jobs" type="button">Jobs</button>
+        <button class="tab" data-tab="reports" type="button">Job Reports</button>
+        <button class="tab" data-tab="invoices" type="button">Invoices</button>
+      </nav>
+
+      <section class="card tab-panel active" id="tab-customers">
+        <div class="panel-head">
+          <h2>Customer Accounts</h2>
+          <button id="toggle-customer-form" type="button">Create Customer</button>
+        </div>
+
+        <div id="customer-empty" class="empty-state">
+          No customer accounts yet. Create your first customer to get started.
+        </div>
+
+        <form id="customer-form" class="grid-form hidden">
           <input name="name" placeholder="Full name" required />
           <input name="phone" placeholder="Phone" required />
           <input name="email" type="email" placeholder="Email" required />
@@ -26,12 +41,13 @@
           </label>
           <input name="abn" placeholder="ABN (if business)" />
           <textarea name="businessInfo" placeholder="Further business information"></textarea>
-          <button type="submit">Add Customer</button>
+          <button type="submit">Save Customer</button>
         </form>
+
         <div id="customer-list" class="list"></div>
       </section>
 
-      <section class="card">
+      <section class="card tab-panel" id="tab-jobs">
         <h2>Jobs</h2>
         <form id="job-form" class="grid-form">
           <select name="customerId" required>
@@ -45,7 +61,7 @@
         <div id="job-list" class="list"></div>
       </section>
 
-      <section class="card">
+      <section class="card tab-panel" id="tab-reports">
         <h2>Job Reports (PDF Export)</h2>
         <form id="report-form" class="grid-form">
           <select name="jobId" required>
@@ -56,29 +72,29 @@
           <textarea name="hazards" placeholder="Problems / hazards observed" required></textarea>
           <button type="submit">Create Report</button>
         </form>
+
+        <div class="alerts-block">
+          <h3>Automatic Alerts</h3>
+          <p>Generate alert drafts for email + SMS when jobs and reports are created.</p>
+          <button id="generate-alerts" type="button">Generate Alerts</button>
+          <div id="alert-list" class="list"></div>
+        </div>
+
         <div id="report-preview" class="report-preview"></div>
       </section>
 
-      <section class="card two-col">
-        <div>
-          <h2>Automatic Alerts</h2>
-          <p>Generate alert drafts for email + SMS when jobs and reports are created.</p>
-          <button id="generate-alerts">Generate Alerts</button>
-          <div id="alert-list" class="list"></div>
-        </div>
-        <div>
-          <h2>Invoices</h2>
-          <form id="invoice-form" class="grid-form">
-            <select name="customerId" required>
-              <option value="">Select customer</option>
-            </select>
-            <input name="service" placeholder="Service summary" required />
-            <input name="amount" type="number" min="0" step="0.01" placeholder="Amount" required />
-            <textarea name="paymentInfo" placeholder="How to pay (bank details, terms)" required></textarea>
-            <button type="submit">Create Invoice</button>
-          </form>
-          <div id="invoice-list" class="list"></div>
-        </div>
+      <section class="card tab-panel" id="tab-invoices">
+        <h2>Invoices</h2>
+        <form id="invoice-form" class="grid-form">
+          <select name="customerId" required>
+            <option value="">Select customer</option>
+          </select>
+          <input name="service" placeholder="Service summary" required />
+          <input name="amount" type="number" min="0" step="0.01" placeholder="Amount" required />
+          <textarea name="paymentInfo" placeholder="How to pay (bank details, terms)" required></textarea>
+          <button type="submit">Create Invoice</button>
+        </form>
+        <div id="invoice-list" class="list"></div>
       </section>
     </main>
 
