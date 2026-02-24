@@ -2,7 +2,8 @@ const storageKeys = {
   customers: 'toxinresin_customers',
   jobs: 'toxinresin_jobs',
   reports: 'toxinresin_reports',
-  invoices: 'toxinresin_invoices'
+  invoices: 'toxinresin_invoices',
+  messages: 'toxinresin_messages'
 };
 
 const getData = key => JSON.parse(localStorage.getItem(key) || '[]');
@@ -17,10 +18,18 @@ const jobForm = document.getElementById('job-form');
 const jobList = document.getElementById('job-list');
 const reportForm = document.getElementById('report-form');
 const reportPreview = document.getElementById('report-preview');
+const reportList = document.getElementById('report-list');
 const alertList = document.getElementById('alert-list');
 const invoiceForm = document.getElementById('invoice-form');
 const invoiceList = document.getElementById('invoice-list');
 const generateAlertsButton = document.getElementById('generate-alerts');
+const messageForm = document.getElementById('message-form');
+const messageLog = document.getElementById('message-log');
+
+function removeById(key, id) {
+  const next = getData(key).filter(item => item.id !== id);
+  setData(key, next);
+}
 
 function refreshCustomerState() {
   if (!customerEmpty || !customerForm || !toggleCustomerFormButton) {
@@ -45,9 +54,7 @@ if (toggleCustomerFormButton && customerForm) {
 function renderSelectOptions() {
   const customers = getData(storageKeys.customers);
   [jobForm?.customerId, invoiceForm?.customerId].forEach(select => {
-    if (!select) {
-      return;
-    }
+    if (!select) return;
     select.innerHTML = '<option value="">Select customer</option>';
     customers.forEach(customer => {
       const option = document.createElement('option');
@@ -70,9 +77,7 @@ function renderSelectOptions() {
 }
 
 function renderCustomers() {
-  if (!customerList) {
-    return;
-  }
+  if (!customerList) return;
   const customers = getData(storageKeys.customers);
   customerList.innerHTML = customers
     .map(
@@ -80,49 +85,61 @@ function renderCustomers() {
         customer.isBusiness
           ? `Business | ABN: ${customer.abn || 'N/A'} | ${customer.businessInfo || 'No extra info'}`
           : 'Residential customer'
-      }</div>`
+      }<div class="item-actions"><button class="danger" data-delete-customer="${customer.id}" type="button">Delete</button></div></div>`
     )
     .join('');
   refreshCustomerState();
 }
 
 function renderJobs() {
-  if (!jobList) {
-    return;
-  }
+  if (!jobList) return;
   const customers = getData(storageKeys.customers);
   const customerById = Object.fromEntries(customers.map(c => [c.id, c]));
   const jobs = getData(storageKeys.jobs);
   jobList.innerHTML = jobs
     .map(job => {
       const customer = customerById[job.customerId];
-      return `<div class="item"><strong>${job.description}</strong><br>Customer: ${customer?.name || 'Unknown'}<br>Address: ${job.address}<br>Scheduled: ${new Date(job.scheduledAt).toLocaleString()}</div>`;
+      return `<div class="item"><strong>${job.description}</strong><br>Customer: ${customer?.name || 'Unknown'}<br>Address: ${job.address}<br>Scheduled: ${new Date(
+        job.scheduledAt
+      ).toLocaleString()}<div class="item-actions"><button class="danger" data-delete-job="${job.id}" type="button">Delete</button></div></div>`;
     })
     .join('');
 }
 
 function renderInvoices() {
-  if (!invoiceList) {
-    return;
-  }
+  if (!invoiceList) return;
   const customers = getData(storageKeys.customers);
   const customerById = Object.fromEntries(customers.map(c => [c.id, c]));
   const invoices = getData(storageKeys.invoices);
   invoiceList.innerHTML = invoices
     .map(invoice => {
       const customer = customerById[invoice.customerId];
-      return `<div class="item"><strong>Invoice #${invoice.number}</strong><br>To: ${customer?.name || 'Unknown'}<br>Service: ${invoice.service}<br>Amount: $${invoice.amount.toFixed(
-        2
-      )}<br>Payment Info: ${invoice.paymentInfo}</div>`;
+      return `<div class="item"><strong>Invoice #${invoice.number}</strong><br>To: ${customer?.name || 'Unknown'}<br>Service: ${
+        invoice.service
+      }<br>Amount: $${invoice.amount.toFixed(2)}<br>Payment Info: ${invoice.paymentInfo}<div class="item-actions"><button class="danger" data-delete-invoice="${
+        invoice.id
+      }" type="button">Delete</button></div></div>`;
     })
+    .join('');
+}
+
+function renderReports() {
+  if (!reportList) return;
+  const reports = getData(storageKeys.reports);
+  reportList.innerHTML = reports
+    .map(
+      report => `<div class="item"><strong>${report.customerName}</strong><br>${report.jobDescription}<br>${report.address}<br>Completed: ${new Date(
+        report.completedAt
+      ).toLocaleString()}<div class="item-actions"><button type="button" data-preview-report="${report.id}">View</button><button class="danger" type="button" data-delete-report="${
+        report.id
+      }">Delete</button></div></div>`
+    )
     .join('');
 }
 
 function printOnlyReport(reportHtml) {
   const printWindow = window.open('', '_blank', 'width=900,height=1200');
-  if (!printWindow) {
-    return;
-  }
+  if (!printWindow) return;
   printWindow.document.write(`
     <html>
       <head>
@@ -142,17 +159,14 @@ function printOnlyReport(reportHtml) {
 }
 
 function buildReportPreview(report) {
-  if (!reportPreview) {
-    return;
-  }
+  if (!reportPreview) return;
   const template = document.getElementById('report-template');
-  if (!template) {
-    return;
-  }
+  if (!template) return;
 
   const fragment = template.content.cloneNode(true);
   const setField = (field, value) => {
     const node = fragment.querySelector(`[data-field="${field}"]`);
+    if (!node) return;
     if (field === 'photo') {
       node.src = value;
     } else {
@@ -176,12 +190,22 @@ function buildReportPreview(report) {
   exportBtn.textContent = 'Export Service Report PDF';
   exportBtn.addEventListener('click', () => {
     const reportElement = reportPreview.querySelector('.pdf-report');
-    if (!reportElement) {
-      return;
-    }
+    if (!reportElement) return;
     printOnlyReport(reportElement.outerHTML);
   });
   reportPreview.append(exportBtn);
+}
+
+function renderMessageLog() {
+  if (!messageLog) return;
+  const messages = getData(storageKeys.messages);
+  messageLog.innerHTML = messages
+    .map(
+      msg => `<div class="item"><strong>${msg.channel}</strong> to ${msg.recipient}<br>${msg.message}<br><small>${new Date(
+        msg.createdAt
+      ).toLocaleString()}</small><div class="item-actions"><button class="danger" type="button" data-delete-message="${msg.id}">Delete</button></div></div>`
+    )
+    .join('');
 }
 
 if (customerForm) {
@@ -204,9 +228,17 @@ if (customerForm) {
     setData(storageKeys.customers, customers);
     customerForm.reset();
     customerForm.classList.add('hidden');
-    if (toggleCustomerFormButton) {
-      toggleCustomerFormButton.textContent = 'Create Customer';
-    }
+    if (toggleCustomerFormButton) toggleCustomerFormButton.textContent = 'Create Customer';
+    renderCustomers();
+    renderSelectOptions();
+  });
+}
+
+if (customerList) {
+  customerList.addEventListener('click', event => {
+    const button = event.target.closest('[data-delete-customer]');
+    if (!button) return;
+    removeById(storageKeys.customers, button.dataset.deleteCustomer);
     renderCustomers();
     renderSelectOptions();
   });
@@ -231,6 +263,22 @@ if (jobForm) {
   });
 }
 
+if (jobList) {
+  jobList.addEventListener('click', event => {
+    const button = event.target.closest('[data-delete-job]');
+    if (!button) return;
+    const jobId = button.dataset.deleteJob;
+    removeById(storageKeys.jobs, jobId);
+    setData(
+      storageKeys.reports,
+      getData(storageKeys.reports).filter(report => report.jobId !== jobId)
+    );
+    renderJobs();
+    renderReports();
+    renderSelectOptions();
+  });
+}
+
 if (reportForm) {
   reportForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -243,9 +291,7 @@ if (reportForm) {
     const job = jobs.find(j => j.id === jobId);
     const customer = customers.find(c => c.id === job?.customerId);
 
-    if (!job || !file || !(file instanceof File)) {
-      return;
-    }
+    if (!job || !file || !(file instanceof File)) return;
 
     const photoDataUrl = await new Promise(resolve => {
       const reader = new FileReader();
@@ -269,7 +315,24 @@ if (reportForm) {
     reports.unshift(report);
     setData(storageKeys.reports, reports);
     buildReportPreview(report);
+    renderReports();
     reportForm.reset();
+  });
+}
+
+if (reportList) {
+  reportList.addEventListener('click', event => {
+    const previewButton = event.target.closest('[data-preview-report]');
+    if (previewButton) {
+      const report = getData(storageKeys.reports).find(item => item.id === previewButton.dataset.previewReport);
+      if (report) buildReportPreview(report);
+      return;
+    }
+    const deleteButton = event.target.closest('[data-delete-report]');
+    if (!deleteButton) return;
+    removeById(storageKeys.reports, deleteButton.dataset.deleteReport);
+    renderReports();
+    if (reportPreview) reportPreview.innerHTML = '';
   });
 }
 
@@ -322,7 +385,60 @@ if (invoiceForm) {
   });
 }
 
+if (invoiceList) {
+  invoiceList.addEventListener('click', event => {
+    const button = event.target.closest('[data-delete-invoice]');
+    if (!button) return;
+    removeById(storageKeys.invoices, button.dataset.deleteInvoice);
+    renderInvoices();
+  });
+}
+
+if (messageForm) {
+  messageForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const form = new FormData(messageForm);
+    const channel = String(form.get('channel'));
+    const recipient = String(form.get('recipient'));
+    const subject = String(form.get('subject') || '');
+    const message = String(form.get('message'));
+
+    const messages = getData(storageKeys.messages);
+    messages.unshift({
+      id: uid(),
+      channel,
+      recipient,
+      subject,
+      message,
+      createdAt: new Date().toISOString()
+    });
+    setData(storageKeys.messages, messages);
+    renderMessageLog();
+
+    if (channel === 'Email') {
+      const mailto = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+      window.open(mailto, '_blank');
+    } else {
+      const sms = `sms:${encodeURIComponent(recipient)}?body=${encodeURIComponent(message)}`;
+      window.open(sms, '_blank');
+    }
+
+    messageForm.reset();
+  });
+}
+
+if (messageLog) {
+  messageLog.addEventListener('click', event => {
+    const button = event.target.closest('[data-delete-message]');
+    if (!button) return;
+    removeById(storageKeys.messages, button.dataset.deleteMessage);
+    renderMessageLog();
+  });
+}
+
 renderCustomers();
 renderJobs();
+renderReports();
 renderInvoices();
 renderSelectOptions();
+renderMessageLog();

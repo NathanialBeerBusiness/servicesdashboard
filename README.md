@@ -8,6 +8,10 @@ Simple browser-based dashboard prototype for a services business automation work
 - Job creation linked to customers.
 - Service Report creation with property photo, notes, hazards, and completion timestamp.
 - Service Report PDF export that prints **only the report content**.
+- Delete actions for customers, jobs, service reports, invoices, and communication history.
+- SMS/Email send form on the Service Reports page:
+  - opens your device/app via `mailto:` (email) or `sms:` (text)
+  - saves sent message history locally in the dashboard.
 - Alert draft generation for email and SMS messages.
 - Invoice creation with payment instructions.
 
