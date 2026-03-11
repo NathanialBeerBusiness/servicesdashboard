@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToxinResin - Service Reports</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ToxinResin Automation Dashboard</h1>
+      <p>Service Reports</p>
+    </header>
+
+    <nav class="tabs" aria-label="Dashboard pages">
+      <a class="tab" href="customers.html">Customer Accounts</a>
+      <a class="tab" href="jobs.html">Jobs</a>
+      <a class="tab active" href="service-reports.html">Service Reports</a>
+      <a class="tab" href="invoices.html">Invoices</a>
+    </nav>
+
+    <main>
+      <section class="card">
+        <h2>Service Reports</h2>
+        <form id="report-form" class="grid-form">
+          <select name="jobId" required><option value="">Select job</option></select>
+          <input name="propertyPhoto" type="file" accept="image/*" required />
+          <textarea name="workDone" placeholder="Work Carried Out" required></textarea>
+          <textarea name="notesObservations" placeholder="Notes / Observations" required></textarea>
+          <textarea name="recommendations" placeholder="Recommendations" required></textarea>
+          <input name="finalisedBy" placeholder="Finalized By (Name of Service Man)" required />
+          <button type="submit">Create Service Report</button>
+        </form>
+
+        <div class="alerts-block">
+          <h3>Automatic Alerts</h3>
+          <p>Generate alert drafts for email + SMS when jobs and service reports are created.</p>
+          <button id="generate-alerts" type="button">Generate Alerts</button>
+          <div id="alert-list" class="list"></div>
+        </div>
+
+        <h3>Saved Service Reports</h3>
+        <div id="report-list" class="list"></div>
+
+        <h3>Preview</h3>
+        <div id="report-preview" class="report-preview"></div>
+      </section>
+
+      <section class="card">
+        <h2>Send SMS / Email</h2>
+        <form id="message-form" class="grid-form">
+          <select name="channel" required>
+            <option value="Email">Email</option>
+            <option value="SMS">SMS</option>
+          </select>
+          <input name="recipient" placeholder="Recipient email or mobile" required />
+          <input name="subject" placeholder="Email subject (optional for SMS)" />
+          <textarea name="message" placeholder="Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+        <div id="message-log" class="list"></div>
+      </section>
+    </main>
+
+    <template id="report-template">
+      <article class="pdf-report" id="printable-report">
+        <h3>Service Report - ToxinResin</h3>
+        <p><strong>1. Customer Information</strong></p>
+        <p><strong>2. Customer Name:</strong> <span data-field="customerName"></span></p>
+        <p><strong>3. Customer Address:</strong> <span data-field="customerAddress"></span></p>
+        <p><strong>4. Customer Email:</strong> <span data-field="customerEmail"></span></p>
+        <p><strong>5. Customer Phone Number:</strong> <span data-field="customerPhone"></span></p>
+        <p><strong>6. Date:</strong> <span data-field="reportDate"></span></p>
+        <p><strong>7. Time:</strong> <span data-field="reportTime"></span></p>
+        <p><strong>8. Job Number:</strong> <span data-field="jobNumber"></span></p>
+        <p><strong>9. Property Photo:</strong></p>
+        <img data-field="propertyPhoto" alt="Property photo" />
+        <p><strong>10. Work Carried Out:</strong> <span data-field="workDone"></span></p>
+        <p><strong>11. Notes / Observations:</strong> <span data-field="notesObservations"></span></p>
+        <p><strong>12. Recommendations:</strong> <span data-field="recommendations"></span></p>
+        <p><strong>13. Finalized By:</strong> <span data-field="finalisedBy"></span></p>
+        <p><strong>14.</strong> Please contact us if you have any further questions or concerns about our services.</p>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

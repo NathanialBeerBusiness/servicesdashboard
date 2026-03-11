@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToxinResin - Customer Accounts</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ToxinResin Automation Dashboard</h1>
+      <p>Customer Accounts</p>
+    </header>
+
+    <nav class="tabs" aria-label="Dashboard pages">
+      <a class="tab active" href="customers.html">Customer Accounts</a>
+      <a class="tab" href="jobs.html">Jobs</a>
+      <a class="tab" href="service-reports.html">Service Reports</a>
+      <a class="tab" href="invoices.html">Invoices</a>
+    </nav>
+
+    <main>
+      <section class="card">
+        <div class="panel-head">
+          <h2>Customer Accounts</h2>
+          <button id="toggle-customer-form" type="button">Create Customer</button>
+        </div>
+        <div id="customer-empty" class="empty-state">
+          No customer accounts yet. Create your first customer to get started.
+        </div>
+        <form id="customer-form" class="grid-form hidden">
+          <input name="name" placeholder="Full name" required />
+          <input name="phone" placeholder="Phone" required />
+          <input name="email" type="email" placeholder="Email" required />
+          <input name="address" placeholder="Address" required />
+          <label class="inline"><input name="isBusiness" type="checkbox" />Business customer</label>
+          <input name="abn" placeholder="ABN (if business)" />
+          <textarea name="businessInfo" placeholder="Further business information"></textarea>
+          <button type="submit">Save Customer</button>
+        </form>
+        <div id="customer-list" class="list"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToxinResin - Jobs</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ToxinResin Automation Dashboard</h1>
+      <p>Jobs</p>
+    </header>
+
+    <nav class="tabs" aria-label="Dashboard pages">
+      <a class="tab" href="customers.html">Customer Accounts</a>
+      <a class="tab active" href="jobs.html">Jobs</a>
+      <a class="tab" href="service-reports.html">Service Reports</a>
+      <a class="tab" href="invoices.html">Invoices</a>
+    </nav>
+
+    <main>
+      <section class="card">
+        <h2>Jobs</h2>
+        <form id="job-form" class="grid-form">
+          <select name="customerId" required><option value="">Select customer</option></select>
+          <input name="address" placeholder="Job address" required />
+          <textarea name="description" placeholder="Job description" required></textarea>
+          <input name="scheduledAt" type="datetime-local" required />
+          <button type="submit">Create Job</button>
+        </form>
+        <div id="job-list" class="list"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
